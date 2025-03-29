@@ -44,7 +44,7 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login", "/vendor/test","/resources/categories").permitAll()
+                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login", "/vendor/test","/resources/categories", "/vendor/by-location/{location}/by-category/{category}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -69,7 +69,7 @@ public class SecurityConfig {
     @Bean
     public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://www.wedstra.com"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://wedstra-frontend.vercel.app/"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

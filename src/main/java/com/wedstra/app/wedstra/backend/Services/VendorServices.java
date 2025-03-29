@@ -170,6 +170,12 @@ public ResponseEntity<?> registerVendor(String username, String password, String
         return vendorRepository.findByUsername(username);
     }
 
+    public List<Vendor> getVendorByLocationByCategory(String category, String location) {
+        Query query = new Query(Criteria.where("business_category").is(category).and("city").is(location));
+        return mongoTemplate.find(query, Vendor.class);
+    }
+
+
 //    public String uploadImage(MultipartFile file) {
 //        // save file to s3
 //        //1. check if the file is empty

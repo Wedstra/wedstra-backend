@@ -2,6 +2,7 @@ package com.wedstra.app.wedstra.backend.Controller;
 
 import com.mongodb.internal.VisibleForTesting;
 import com.wedstra.app.wedstra.backend.Entity.LoginRequest;
+import com.wedstra.app.wedstra.backend.Entity.Service;
 import com.wedstra.app.wedstra.backend.Entity.Vendor;
 import com.wedstra.app.wedstra.backend.Services.VendorServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,6 +115,11 @@ public ResponseEntity<?> registerVendor(
         else{
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
+    }
+
+    @GetMapping("/by-location/{location}/by-category/{category}")
+    public ResponseEntity<List<Vendor>> handleGetServicesByCategory(@PathVariable String category, @PathVariable String location) {
+        return new ResponseEntity<>(vendorServices.getVendorByLocationByCategory(category, location), HttpStatus.OK);
     }
 
 

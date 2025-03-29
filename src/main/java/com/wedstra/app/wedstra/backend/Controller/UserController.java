@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,15 +34,15 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> handleUserLogin(@RequestBody LoginRequest loginRequest, HttpSession session){
+        try {
             String token = userServices.authenticate(loginRequest.getUsername(), loginRequest.getPassword());
-
-            if(!token.equals("fails")){
-                session.setAttribute("user", loginRequest.getUsername());
-                return new ResponseEntity<>(token, HttpStatus.OK);
-            }else{
-                return new ResponseEntity<>("Invalid username or password",HttpStatus.UNAUTHORIZED);
-            }
+            session.setAttribute("user", loginRequest.getUsername());
+            return new ResponseEntity<>(token, HttpStatus.OK);
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<>("Invalid username or password",HttpStatus.NOT_FOUND);
+        }
     }
+
 
 
     @GetMapping("/get-all-user")

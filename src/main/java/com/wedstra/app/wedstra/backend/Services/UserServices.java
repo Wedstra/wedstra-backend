@@ -32,6 +32,7 @@ public class UserServices {
 
     public String createNewUser(User user) {
         user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+        user.setRole("USER");
         User user1 = userRepo.save(user);
         if(user1 != null){
             return "user registration successfully.";
@@ -49,16 +50,20 @@ public class UserServices {
     public String authenticate(String username, String passwordHash){
         User user = userRepo.findByUsername(username);
         if(user != null){
-            Authentication authentication = authManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), passwordHash));
-            if(authentication.isAuthenticated()){
-                return jwtServices.generateToken(username, user.getId());
+            try {
+                Authentication authentication = authManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(user.getUsername(), passwordHash)
+                );
+                if(authentication.isAuthenticated()){
+                    return jwtServices.generateToken(username, user.getId());
+                }
+            } catch (Exception e) {
+                throw new BadCredentialsException("Invalid username or password");
             }
         }
-        else{
-            return "Invalid username or password";
-        }
-        return "fail";
+        throw new BadCredentialsException("Invalid username or password");
     }
+
 
     public User getUserById(String id) {
         return userRepo.findById(new ObjectId(id)).orElse(null);

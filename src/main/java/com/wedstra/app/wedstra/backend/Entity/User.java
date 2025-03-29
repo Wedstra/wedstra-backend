@@ -21,8 +21,15 @@ public class User {
     private String gender;
     private String address;
     private Set<String> roles;
+    private String role;
 
+    public String getRole() {
+        return role;
+    }
 
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     // Constructors
     public User() {}
