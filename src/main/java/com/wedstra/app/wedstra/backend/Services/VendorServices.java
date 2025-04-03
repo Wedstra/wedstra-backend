@@ -3,6 +3,7 @@ package com.wedstra.app.wedstra.backend.Services;
 import com.wedstra.app.wedstra.backend.Entity.Vendor;
 import com.wedstra.app.wedstra.backend.Repo.VendorRepository;
 import com.wedstra.app.wedstra.backend.config.AmazonS3Config.bucket.fileStore.FileStore;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -173,6 +174,10 @@ public ResponseEntity<?> registerVendor(String username, String password, String
     public List<Vendor> getVendorByLocationByCategory(String category, String location) {
         Query query = new Query(Criteria.where("business_category").is(category).and("city").is(location));
         return mongoTemplate.find(query, Vendor.class);
+    }
+
+    public Vendor getVendorById(String id) {
+        return vendorRepository.findById(new ObjectId(id)).orElse(null);
     }
 
 
