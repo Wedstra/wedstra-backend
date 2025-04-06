@@ -45,26 +45,12 @@ public class VendorServices {
 //        return "vendor created in services class";
 //    }
 public ResponseEntity<?> registerVendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String city, String gstNumber, MultipartFile license, String termsAndConditions, MultipartFile vendorAadharCard, MultipartFile vendorPAN, MultipartFile businessPAN, MultipartFile electricityBill, List<MultipartFile> businessPhotos) throws IOException {
-    //step 1 Save vendor details to the MongoDB
-    System.out.println("Vendor Name: "+vendorName);
-    System.out.println("Business Name: "+businessName);
-    System.out.println("Business Category: "+businessCategory);
-    System.out.println("Email: "+email);
-    System.out.println("Phone No: "+phoneNo);
-    System.out.println("City: "+city);
-    System.out.println("GST Number: "+gstNumber);
-    System.out.println("Terms and Conditions: "+termsAndConditions);
-    System.out.println("Vendor Aadhar Card: "+vendorAadharCard.getOriginalFilename());
-    System.out.println("Vendor PAN: "+vendorPAN.getOriginalFilename());
-    System.out.println("Business PAN: "+businessPAN.getOriginalFilename());
-    System.out.println("Electricity Bill: "+electricityBill.getOriginalFilename());
-    System.out.println("License: "+license.getOriginalFilename());
-    for(MultipartFile businessPhoto: businessPhotos){
-        System.out.println("Business Photos: "+businessPhoto.getOriginalFilename());
-    }
     Vendor vendor = new Vendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, termsAndConditions);
     vendor.setPasswordHash(passwordEncoder.encode(password));
     vendor.setRole("VENDOR");
+    vendor.setNoOfServices(0);
+    vendor.setPlanType("BASIC");
+    vendor.setVerified(false);
     vendorRepository.save(vendor);
 
     //step 2 Save the images to the S3 bucket
@@ -72,10 +58,7 @@ public ResponseEntity<?> registerVendor(String username, String password, String
     Map<String, String> fileUrls = new HashMap<>();
 
     Map<String, String> metadata = new HashMap<>();
-//        metadata.put("Content-Type", vendorAadharCard.getContentType());
-//        metadata.put("Content-Length", String.valueOf(vendorAadharCard.getSize()));
 
-//    String key = vendorId + "/documents/" + "/"+fileType+"_" + fileName;
     fileUrls.put("vendor_aadharCard", fileStore.save(vendorAadharCard.getOriginalFilename(),"vendor_adhaarCard", vendorId ,Optional.of(metadata),vendorAadharCard.getInputStream(), generateKey(vendorAadharCard, vendorId, "adhaarCard")));
     fileUrls.put("vendor_PAN", fileStore.save(vendorPAN.getOriginalFilename(),"vendor_PAN", vendorId ,Optional.of(metadata),vendorPAN.getInputStream(), generateKey(vendorAadharCard, vendorId, "PAN Card")));
     fileUrls.put("business_PAN", fileStore.save(businessPAN.getOriginalFilename(),"business_PAN", vendorId ,Optional.of(metadata),businessPAN.getInputStream(),generateKey(vendorAadharCard, vendorId, "Business PAN")));
@@ -120,14 +103,48 @@ public ResponseEntity<?> registerVendor(String username, String password, String
         }
     }
 
+//    public String updateVendor(String id, Vendor vendor) {
+//        Query query = new Query(Criteria.where("id").is(id));
+//        Vendor existingVendor = mongoTemplate.findOne(query, Vendor.class);
+//
+//        if(existingVendor == null){
+//            return "Vendor not found.";
+//        }
+//        else {
+//            // Build the update object with the new values
+//            Update update = new Update();
+//            if (vendor.getVendor_name() != null) update.set("vendor_name", vendor.getVendor_name());
+//            if (vendor.getBusiness_name() != null) update.set("business_name", vendor.getBusiness_name());
+//            if (vendor.getBusiness_category() != null) update.set("business_category", vendor.getBusiness_category());
+//            if (vendor.getVendor_aadharCard() != null) update.set("vendor_aadharCard", vendor.getVendor_aadharCard());
+//            if (vendor.getVendor_PAN() != null) update.set("vendor_PAN", vendor.getVendor_PAN());
+//            if (vendor.getBusiness_PAN() != null) update.set("business_PAN", vendor.getBusiness_PAN());
+//            if (vendor.getElectricity_bill() != null) update.set("electricity_bill", vendor.getElectricity_bill());
+//            if (vendor.getBusiness_photos() != null) update.set("business_photos", vendor.getBusiness_photos());
+//            if (vendor.getLiscence() != null) update.set("liscence", vendor.getLiscence());
+//            if (vendor.getGst_number() != null) update.set("gst_number", vendor.getGst_number());
+//            if (vendor.getTerms_and_conditions() != null) update.set("terms_and_conditions", vendor.getTerms_and_conditions());
+//            if (vendor.getEmail() != null) update.set("email", vendor.getEmail());
+//            if (vendor.getPhone_no() != null) update.set("phone_no", vendor.getPhone_no());
+//            if (vendor.getPassword() != null) update.set("password", vendor.getPassword());
+//            if (vendor.getCity() != null) update.set("city", vendor.getCity());
+//            if (vendor.getRole() != null) update.set("role", vendor.getRole());
+//            if (vendor.getPlanType() != null) update.set("planType", vendor.getPlanType());
+//            if (vendor.isVerified()) update.set("isAuthenticated", vendor.isVerified());
+//
+//            // Perform the update
+//            mongoTemplate.updateFirst(query, update, Vendor.class);
+//            return "vendor found.";
+//        }
+//    }
+
     public String updateVendor(String id, Vendor vendor) {
         Query query = new Query(Criteria.where("id").is(id));
         Vendor existingVendor = mongoTemplate.findOne(query, Vendor.class);
 
         if(existingVendor == null){
             return "Vendor not found.";
-        }
-        else {
+        } else {
             // Build the update object with the new values
             Update update = new Update();
             if (vendor.getVendor_name() != null) update.set("vendor_name", vendor.getVendor_name());
@@ -145,12 +162,16 @@ public ResponseEntity<?> registerVendor(String username, String password, String
             if (vendor.getPhone_no() != null) update.set("phone_no", vendor.getPhone_no());
             if (vendor.getPassword() != null) update.set("password", vendor.getPassword());
             if (vendor.getCity() != null) update.set("city", vendor.getCity());
+            if (vendor.getRole() != null) update.set("role", vendor.getRole());
+            if (vendor.getPlanType() != null) update.set("planType", vendor.getPlanType());
+            if (vendor.isVerified()) update.set("isVerified", vendor.isVerified());
 
             // Perform the update
             mongoTemplate.updateFirst(query, update, Vendor.class);
-            return "vendor found.";
+            return "Vendor updated successfully.";
         }
     }
+
 
     public String authenticate(String username, String password) {
         Vendor vendor = vendorRepository.findByUsername(username);
@@ -178,6 +199,28 @@ public ResponseEntity<?> registerVendor(String username, String password, String
 
     public Vendor getVendorById(String id) {
         return vendorRepository.findById(new ObjectId(id)).orElse(null);
+    }
+
+    public Vendor verifyVendor(String id) {
+        Vendor existingVendor = vendorRepository.findById(new ObjectId(id))
+                .orElseThrow(() -> new RuntimeException("Vendor not found with ID: " + id));
+
+        if (!existingVendor.isVerified()) {
+            existingVendor.setVerified(true);
+            vendorRepository.save(existingVendor);
+        }
+
+        return existingVendor; // Return the vendor whether it was already verified or just updated
+    }
+
+    public List<Vendor> getVerifiedVendors() {
+        Query query = new Query(Criteria.where("isVerified").is(true));
+        return mongoTemplate.find(query, Vendor.class);
+    }
+
+    public List<Vendor> getNotVerifiedVendors() {
+        Query query = new Query(Criteria.where("isVerified").is(false));
+        return mongoTemplate.find(query, Vendor.class);
     }
 
 

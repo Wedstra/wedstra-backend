@@ -40,6 +40,8 @@ public class VendorController {
 public ResponseEntity<?> handleTestRoute(){
         return new ResponseEntity<>("test API", HttpStatus.OK);
 }
+
+
 @PostMapping("/register"
 )
 public ResponseEntity<?> registerVendor(
@@ -106,15 +108,31 @@ public ResponseEntity<?> registerVendor(
     }
 
 
+//    @PutMapping("/{id}/update")
+//    public ResponseEntity<String> handleUpdateVendor(@PathVariable String id, @RequestBody Vendor vendor){
+//        String message = vendorServices.updateVendor(id, vendor);
+//        if(message.contains("not found")){
+//            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+//        }
+//        else{
+//            return new ResponseEntity<>(message, HttpStatus.OK);
+//        }
+//    }
+
     @PutMapping("/{id}/update")
-    public ResponseEntity<String> handleUpdateVendor(@PathVariable String id, @RequestBody Vendor vendor){
+    public ResponseEntity<String> handleUpdateVendor(@PathVariable String id, @RequestBody Vendor vendor) {
         String message = vendorServices.updateVendor(id, vendor);
-        if(message.contains("not found")){
+        if (message.contains("not found")) {
             return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-        }
-        else{
+        } else {
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
+    }
+
+    @PutMapping("/verify/{id}")
+    public ResponseEntity<Vendor> verifyVendor(@PathVariable String id) {
+        Vendor updatedVendor = vendorServices.verifyVendor(id);
+        return ResponseEntity.ok(updatedVendor);
     }
 
     @GetMapping("/by-location/{location}/by-category/{category}")
@@ -122,14 +140,13 @@ public ResponseEntity<?> registerVendor(
         return new ResponseEntity<>(vendorServices.getVendorByLocationByCategory(category, location), HttpStatus.OK);
     }
 
+    @GetMapping("/get/verified")
+    public ResponseEntity<List<Vendor>> handleGetVerifiedVendors() {
+        return new ResponseEntity<>(vendorServices.getVerifiedVendors(), HttpStatus.OK);
+    }
 
-//    @PostMapping(
-//            path = "/image/upload",
-//            value = "/image/upload",
-//            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<String> handleUploadImage(@RequestBody MultipartFile multipartFile){
-//        return new ResponseEntity<>(vendorServices.uploadImage(multipartFile), HttpStatus.OK);
-//    }
+    @GetMapping("/get/not-verified")
+    public ResponseEntity<List<Vendor>> handleGetNotVerifiedVendors() {
+        return new ResponseEntity<>(vendorServices.getNotVerifiedVendors(), HttpStatus.OK);
+    }
 }

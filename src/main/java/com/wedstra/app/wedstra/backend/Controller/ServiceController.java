@@ -31,15 +31,21 @@ public class ServiceController {
     }
 
     @PostMapping("/{vendor_id}/create-service")
-    public ResponseEntity<Service> handleCreateService(@RequestParam("service_name") String service_name,
-                                                       @RequestParam("description") String description,
-                                                       @RequestParam("category") String category,
-                                                       @RequestParam("min_price") String min_price,
-                                                       @RequestParam("max_price") String max_price,
-                                                       @RequestParam("location") String location,
-                                                       @RequestParam("files") List<MultipartFile> files,
-                                                       @PathVariable String vendor_id) throws IOException {
-        return new ResponseEntity<>(serviceServices.createService(service_name, description, category, min_price, max_price, location, files ,vendor_id), HttpStatus.CREATED);
+    public ResponseEntity<?> handleCreateService(
+            @RequestParam("service_name") String service_name,
+            @RequestParam("description") String description,
+            @RequestParam("category") String category,
+            @RequestParam("min_price") String min_price,
+            @RequestParam("max_price") String max_price,
+            @RequestParam("location") String location,
+            @RequestParam("files") List<MultipartFile> files,
+            @PathVariable String vendor_id) throws IOException {
+        try {
+            Service createdService = serviceServices.createService(service_name, description, category, min_price, max_price, location, files, vendor_id);
+            return new ResponseEntity<>(createdService, HttpStatus.CREATED);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/by-category/{category}")

@@ -31,9 +31,9 @@ public class Vendor{
     private String phone_no;
     private String city;
     private String role;
-     
-//    public Vendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String city, String gstNumber, String termsAndConditions) {
-//    }
+    private String planType;
+    private int noOfServices;
+    private boolean isVerified;
 
 
     public Vendor(String username, String password, String vendor_name, String business_name, String business_category,String email, String phone_no,String city, String gst_number, String terms_and_conditions ) {
@@ -48,6 +48,34 @@ public class Vendor{
         this.phone_no = phone_no;
         this.city = city;
         this.liscence = liscence;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public void setVerified(boolean verified) {
+        isVerified = verified;
+    }
+
+    public boolean canAddService() {
+        return !"BASIC".equals(planType) || (noOfServices < 1);
+    }
+
+    public String getPlanType() {
+        return planType;
+    }
+
+    public void setPlanType(String planType) {
+        this.planType = planType;
+    }
+
+    public int getNoOfServices() {
+        return noOfServices;
+    }
+
+    public void setNoOfServices(int noOfServices) {
+        this.noOfServices = noOfServices;
     }
 
     public String getRole() {
