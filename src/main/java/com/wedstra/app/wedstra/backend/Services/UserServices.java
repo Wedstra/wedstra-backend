@@ -33,6 +33,7 @@ public class UserServices {
     public String createNewUser(User user) {
         user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
+        user.setPlanType("FREE");
         User user1 = userRepo.save(user);
         if(user1 != null){
             return "user registration successfully.";

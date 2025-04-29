@@ -22,6 +22,7 @@ public class User {
     private String address;
     private Set<String> roles;
     private String role;
+    private String planType;
 
     public String getRole() {
         return role;
@@ -47,6 +48,14 @@ public class User {
         this.address = address;
         this.roles = roles;
         this.passwordHash = passwordHash;
+    }
+
+    public String getPlanType() {
+        return planType;
+    }
+
+    public void setPlanType(String planType) {
+        this.planType = planType;
     }
 
     public String getPasswordHash() {
