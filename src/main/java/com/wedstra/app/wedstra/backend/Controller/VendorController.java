@@ -136,8 +136,13 @@ public ResponseEntity<?> registerVendor(
     }
 
     @GetMapping("/by-location/{location}/by-category/{category}")
-    public ResponseEntity<List<Vendor>> handleGetServicesByCategory(@PathVariable String category, @PathVariable String location) {
+    public ResponseEntity<List<Vendor>> handleGetVendorsByCategoryAndLocation(@PathVariable String category, @PathVariable String location) {
         return new ResponseEntity<>(vendorServices.getVendorByLocationByCategory(category, location), HttpStatus.OK);
+    }
+
+    @GetMapping("verified/by-category/{category}")
+    public ResponseEntity<List<Vendor>> handleGetVerifiedVendorsByCategory(@PathVariable String category) {
+        return new ResponseEntity<>(vendorServices.getVendorByCategory(category), HttpStatus.OK);
     }
 
     @GetMapping("/get/verified")

@@ -44,7 +44,11 @@ public class SecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login", "/vendor/test","/vendor/getVendors","/resources/categories", "/vendor/by-location/{location}/by-category/{category}", "/vendor/getVendorById/{id}", "/vendor/verify/{id}", "/vendor/get/verified", "/ws/**").permitAll()
+                        .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login", "/vendor/test", "/vendor/getVendors", "/resources/categories", "/vendor/by-location/{location}/by-category/{category}", "/vendor/getVendorById/{id}", "/vendor/verify/{id}", "/vendor/get/verified",
+                                "/vendor/verified/by-category/{category}",
+                                "/location/states", "/location/cities",
+                                "/ws/**")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -58,7 +62,7 @@ public class SecurityConfig {
 
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
         provider.setUserDetailsService(userDetailsService);
