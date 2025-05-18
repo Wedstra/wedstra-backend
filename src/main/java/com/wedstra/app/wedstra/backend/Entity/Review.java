@@ -12,7 +12,9 @@ public class Review {
     private String id;
 
     private String userId;
-    private String vendorId; // nullable if reviewing the whole site
+    private String vendorId;
+    private String username;
+    private String title;
     private String content;
     private int rating; // 1 to 5
     private LocalDateTime createdAt;
@@ -21,7 +23,25 @@ public class Review {
         this.createdAt = LocalDateTime.now();
     }
 
+
     // Getters and Setters
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getId() {
         return id;
