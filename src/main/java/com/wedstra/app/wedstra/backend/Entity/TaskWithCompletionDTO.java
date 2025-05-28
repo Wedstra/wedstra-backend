@@ -3,15 +3,35 @@ package com.wedstra.app.wedstra.backend.Entity;
 public class TaskWithCompletionDTO {
     private String id;
     private String title;
-    private String type; // "predefined" or "custom"
+    private String type;
+    private String phase;
+    private String task;
     private boolean completed;
 
 
-    public TaskWithCompletionDTO(String id, String title, String type, boolean completed) {
+    public TaskWithCompletionDTO(String id, String title, String type, String phase, String task, boolean completed) {
         this.id = id;
         this.title = title;
         this.type = type;
+        this.phase = phase;
+        this.task = task;
         this.completed = completed;
+    }
+
+    public String getPhase() {
+        return phase;
+    }
+
+    public void setPhase(String phase) {
+        this.phase = phase;
+    }
+
+    public String getTask() {
+        return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
     }
 
     public String getId() {

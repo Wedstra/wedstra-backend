@@ -47,7 +47,9 @@ public class SecurityConfig {
                         .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login", "/vendor/test", "/vendor/getVendors", "/resources/categories", "/vendor/by-location/{location}/by-category/{category}", "/vendor/getVendorById/{id}", "/vendor/verify/{id}", "/vendor/get/verified",
                                 "/vendor/verified/by-category/{category}",
                                 "/location/states", "/location/cities",
-                                "/reviews/website",
+                                "/reviews/website","/reviews",
+                                "/api/real-weddings/all",
+                                "/blogs",
                                 "/ws/**")
                         .permitAll()
                         .anyRequest().authenticated()

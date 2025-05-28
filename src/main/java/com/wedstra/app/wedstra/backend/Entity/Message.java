@@ -8,19 +8,38 @@ import java.util.Date;
 public class Message {
     private String senderName;
     private String receiverName;
+    private String sName;
+    private String rName;
     private String message;
     private Date date;
     private Status status;
-
     public Message() {
     }
 
-    public Message(String senderName, String receiverName, String message, Date date, Status status) {
+    public Message(String senderName, String receiverName, String sName, String rName, String message, Date date, Status status) {
         this.senderName = senderName;
         this.receiverName = receiverName;
+        this.sName = sName;
+        this.rName = rName;
         this.message = message;
         this.date = date;
         this.status = status;
+    }
+
+    public String getsName() {
+        return sName;
+    }
+
+    public void setsName(String sName) {
+        this.sName = sName;
+    }
+
+    public String getrName() {
+        return rName;
+    }
+
+    public void setrName(String rName) {
+        this.rName = rName;
     }
 
     public Status getStatus() {

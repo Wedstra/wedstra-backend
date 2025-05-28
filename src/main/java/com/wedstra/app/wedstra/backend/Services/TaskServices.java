@@ -11,8 +11,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -50,11 +50,12 @@ public class TaskServices {
     }
 
 
-    public void markTaskCompletion(String taskId, boolean completed) throws Exception {
+    public void markTaskCompletion(String taskId, boolean completed, String userMarkingComplete) throws Exception {
+        System.out.println(userMarkingComplete);
         Tasks taskFromDb = tasksRepository.findById(taskId)
                 .orElseThrow(() -> new Exception("Task not found"));
 
-        String userId = taskFromDb.getCreatedBy(); // or get from session/token if needed
+        String userId = userMarkingComplete; // or get from session/token if needed
 
         // Try to find existing task completion
         Optional<TaskCompletions> existingCompletion =
@@ -75,6 +76,20 @@ public class TaskServices {
             );
             taskCompletionRepository.save(taskCompletion);
         }
+    }
+
+    public void deleteCompletion(String taskId, String userId) {
+
+        boolean exists = taskCompletionRepository
+                .existsByUserIdAndTaskId(userId, taskId);
+        if (!exists) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Completion record not found for taskId=" + taskId +
+                            ", userId=" + userId);
+        }
+
+        taskCompletionRepository.deleteByUserIdAndTaskId(userId, taskId);
     }
 
     private String getCurrentFormattedDateTime() {
@@ -110,6 +125,8 @@ public class TaskServices {
                         task.getId(),
                         task.getTitle(),
                         task.getType(),
+                        task.getPhase(),
+                        task.getTask(),
                         completedTaskIds.contains(task.getId())
                 ))
                 .collect(Collectors.toList());
