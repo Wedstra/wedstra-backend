@@ -35,10 +35,8 @@ public class ChatController {
 
     @MessageMapping("/private-message")
     public Message recMessage(@Payload Message message){
-        if(message.getDate() == null){
-
-        }
         Message uploadedMessage = messageService.uploadMessage(message);
+        System.out.println(uploadedMessage);
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(),"/private",message);
         return message;
     }

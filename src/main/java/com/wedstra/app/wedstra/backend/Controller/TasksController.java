@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -60,14 +61,26 @@ public class TasksController {
 
     @PostMapping("/mark-complete")
     public ResponseEntity<String> updateTaskCompletion(@RequestBody TaskCompletions request) {
+        System.out.println("User Marking status:"+request.getUserId());
         try {
-            taskServices.markTaskCompletion(request.getTaskId(), request.isCompleted());
+            taskServices.markTaskCompletion(request.getTaskId(), request.isCompleted(), request.getUserId());
             return ResponseEntity.ok("Task completion updated successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
+    @DeleteMapping("/{taskId}/completion")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void uncheckTask(@PathVariable String taskId,
+                            @RequestParam(required = false) String userId,
+                            Principal principal) {
+
+        // If you trust Spring Security, get the logged-in user from Principal
+        String effectiveUserId = (userId != null) ? userId : principal.getName();
+
+        taskServices.deleteCompletion(taskId, effectiveUserId);
+    }
 
 
     @GetMapping("/all-tasks-with-status/{userId}")

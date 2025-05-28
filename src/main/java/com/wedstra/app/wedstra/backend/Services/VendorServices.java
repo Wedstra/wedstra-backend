@@ -39,11 +39,6 @@ public class VendorServices {
         return vendorRepository.findAll();
     }
 
-
-    //    public String createVendor(Vendor vendor) {
-//        vendorRepository.save(vendor);
-//        return "vendor created in services class";
-//    }
     public ResponseEntity<?> registerVendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String city, String gstNumber, MultipartFile license, String termsAndConditions, MultipartFile vendorAadharCard, MultipartFile vendorPAN, MultipartFile businessPAN, MultipartFile electricityBill, List<MultipartFile> businessPhotos) throws IOException {
         Vendor vendor = new Vendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, termsAndConditions);
         vendor.setPasswordHash(passwordEncoder.encode(password));
@@ -66,10 +61,17 @@ public class VendorServices {
         fileUrls.put("license", fileStore.save(license.getOriginalFilename(), "license", vendorId, Optional.of(metadata), license.getInputStream(), generateKey(vendorAadharCard, vendorId, "license")));
 
 
+        // Step 3: Upload business photos (bug fixed here)
         List<String> photoUrls = new ArrayList<>();
         for (MultipartFile businessPhoto : businessPhotos) {
-            String photoUrl = fileUrls.put("business_photos", fileStore.save(businessPhoto.getOriginalFilename(), "business_photos", vendorId, Optional.of(metadata), businessPhoto.getInputStream(), generateKey(businessPhoto, vendorId, "business_photos")));
-            photoUrls.add(photoUrl);
+            String url = fileStore.save(
+                    businessPhoto.getOriginalFilename(),
+                    "business_photos",
+                    vendorId,
+                    Optional.of(metadata),
+                    businessPhoto.getInputStream(),
+                    generateKey(businessPhoto, vendorId, "business_photos"));
+            photoUrls.add(url); // ✅ Directly use the returned URL
         }
 
         vendor.setVendor_aadharCard(fileUrls.get("vendor_aadharCard"));
@@ -252,4 +254,4 @@ public class VendorServices {
 //        }
 //        return "image uploaded";
 //    }
-    }
+}

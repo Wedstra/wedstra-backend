@@ -15,15 +15,35 @@ public class Tasks {
     private String type;
     private String createdBy;
     private String createAt;
+    private String phase;
+    private String task;
 
     public Tasks(){}
 
-    public Tasks(String id, String title, String type, String createdBy, String createAt) {
+    public Tasks(String phase, String id, String title, String type, String createdBy, String createAt, String task) {
+        this.phase = phase;
         this.id = id;
         this.title = title;
         this.type = type;
         this.createdBy = createdBy;
         this.createAt = createAt;
+        this.task = task;
+    }
+
+    public String getPhase() {
+        return phase;
+    }
+
+    public void setPhase(String phase) {
+        this.phase = phase;
+    }
+
+    public String getTask() {
+        return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
     }
 
     public String getId() {

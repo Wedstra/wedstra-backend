@@ -9,4 +9,8 @@ import java.util.Optional;
 public interface TaskCompletionRepository extends MongoRepository<TaskCompletions, String> {
     Optional<TaskCompletions> findByUserIdAndTaskId(String userId, String taskId);
     List<TaskCompletions> findByUserId(String userId);
+
+    void deleteByUserIdAndTaskId(String userId, String taskId);
+
+    boolean existsByUserIdAndTaskId(String userId, String taskId);
 }

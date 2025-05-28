@@ -24,6 +24,11 @@ public class TaskCompletions {
         this.completedAt = completedAt;
     }
 
+    public TaskCompletions(String userId, String taskId) {
+        this.userId = userId;
+        this.taskId = taskId;
+    }
+
     public String getId() {
         return id;
     }
