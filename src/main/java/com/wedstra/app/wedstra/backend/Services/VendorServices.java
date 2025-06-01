@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +36,9 @@ public class VendorServices {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     public List<Vendor> getAllVendors() {
         return vendorRepository.findAll();
@@ -71,7 +76,7 @@ public class VendorServices {
                     Optional.of(metadata),
                     businessPhoto.getInputStream(),
                     generateKey(businessPhoto, vendorId, "business_photos"));
-            photoUrls.add(url); // ✅ Directly use the returned URL
+            photoUrls.add(url); // Directly use the returned URL
         }
 
         vendor.setVendor_aadharCard(fileUrls.get("vendor_aadharCard"));
@@ -82,6 +87,23 @@ public class VendorServices {
         vendor.setBusiness_photos(photoUrls);
 
         vendorRepository.save(vendor);
+
+//        try {
+//            SimpleMailMessage message = new SimpleMailMessage();
+//            message.setTo(vendor.getEmail());
+//            message.setSubject("Vendor Registration Received - Verification in Progress");
+//            message.setText(
+//                    "Dear " + vendorName + ",\n\n" +
+//                            "Thank you for registering as a vendor with Wedstra.\n\n" +
+//                            "Your profile has been successfully submitted and is currently under verification. " +
+//                            "You will receive an update on your account status within 2–4 working days.\n\n" +
+//                            "Regards,\n" +
+//                            "Wedstra Team");
+//
+//            mailSender.send(message);
+//        } catch (Exception e) {
+//            System.err.println("Failed to send registration email: " + e.getMessage());
+//        }
 
         return ResponseEntity.ok(vendor);
     }

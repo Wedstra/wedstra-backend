@@ -20,7 +20,7 @@ public class RealWeddingController {
     @Autowired
     private RealWeddingService service;
 
-    // ✅ Create
+    // Create
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadRealWedding(
             @RequestParam("title") String title,
@@ -35,13 +35,13 @@ public class RealWeddingController {
     }
 
 
-    // 📋 Get All
+    // Get All
     @GetMapping("/all")
     public ResponseEntity<List<RealWedding>> getAllWeddings() {
         return ResponseEntity.ok(service.getAllRealWeddings());
     }
 
-    // ❌ Delete by ID
+    // Delete by ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteWedding(@PathVariable String id) {
         boolean deleted = service.deleteRealWedding(id);
