@@ -19,7 +19,6 @@ public class UserController {
     @Autowired
     private UserServices userServices;
 
-
     @PostMapping("/register")
     public ResponseEntity<String> handleUserRegister(@RequestBody User user){
         String message = userServices.createNewUser(user);
@@ -64,6 +63,4 @@ public class UserController {
     public ResponseEntity<User> hendleGetUserByUsername(@PathVariable String username){
         return new ResponseEntity<>(userServices.getUserByUsername(username), HttpStatus.OK);
     }
-
-
 }

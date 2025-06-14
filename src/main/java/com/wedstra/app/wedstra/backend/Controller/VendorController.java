@@ -5,6 +5,7 @@ import com.wedstra.app.wedstra.backend.Entity.LoginRequest;
 import com.wedstra.app.wedstra.backend.Entity.Service;
 import com.wedstra.app.wedstra.backend.Entity.Vendor;
 import com.wedstra.app.wedstra.backend.Services.VendorServices;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -61,7 +62,7 @@ public ResponseEntity<?> registerVendor(
         @RequestParam("business_PAN") MultipartFile businessPAN,
         @RequestParam("electricity_bill") MultipartFile electricityBill,
         @RequestParam("business_photos") List<MultipartFile> businessPhotos
-) throws IOException {
+) throws IOException, MessagingException {
 
     return vendorServices.registerVendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, license, termsAndConditions, vendorAadharCard, vendorPAN, businessPAN, electricityBill, businessPhotos);
     //return new ResponseEntity<>("working", HttpStatus.CREATED);
@@ -130,7 +131,7 @@ public ResponseEntity<?> registerVendor(
     }
 
     @PutMapping("/verify/{id}")
-    public ResponseEntity<Vendor> verifyVendor(@PathVariable String id) {
+    public ResponseEntity<Vendor> verifyVendor(@PathVariable String id) throws MessagingException {
         Vendor updatedVendor = vendorServices.verifyVendor(id);
         return ResponseEntity.ok(updatedVendor);
     }
