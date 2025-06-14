@@ -49,6 +49,7 @@ public class SecurityConfig {
                                 "/location/states", "/location/cities",
                                 "/reviews/website","/reviews",
                                 "/api/real-weddings/all",
+                                "/auth/forgot-password","/auth/reset-password",
                                 "/blogs",
                                 "/ws/**")
                         .permitAll()
