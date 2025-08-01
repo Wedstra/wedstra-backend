@@ -49,6 +49,7 @@ public class UserServices {
 
 
     public String authenticate(String username, String passwordHash){
+        System.out.println(passwordHash);
         User user = userRepo.findByUsername(username);
         if(user != null){
             try {
