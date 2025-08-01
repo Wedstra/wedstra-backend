@@ -34,6 +34,7 @@ public class UserServices {
         user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
         user.setPlanType("FREE");
+        user.setBudget(0);
         User user1 = userRepo.save(user);
         if(user1 != null){
             return "user registration successfully.";
@@ -74,4 +75,11 @@ public class UserServices {
     public User getUserByUsername(String username) {
         return userRepo.findByUsername(username);
     }
+
+    public User updateBudget(String userId, double newBudget) {
+        User user = userRepo.findById(userId).orElseThrow();
+        user.setBudget(newBudget);
+        return userRepo.save(user);
+    }
+
 }

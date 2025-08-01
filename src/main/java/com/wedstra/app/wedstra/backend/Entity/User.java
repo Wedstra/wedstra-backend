@@ -23,6 +23,7 @@ public class User {
     private Set<String> roles;
     private String role;
     private String planType;
+    private double budget;
 
     public String getRole() {
         return role;
@@ -48,6 +49,14 @@ public class User {
         this.address = address;
         this.roles = roles;
         this.passwordHash = passwordHash;
+    }
+
+    public double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(double budget) {
+        this.budget = budget;
     }
 
     public String getPlanType() {
