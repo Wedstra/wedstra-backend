@@ -31,6 +31,12 @@ public class TasksController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
 
+    @DeleteMapping("/custom/{taskId}")
+    public ResponseEntity<?> deleteCustomTask(@PathVariable String taskId) {
+        taskServices.deleteCustomTask(taskId);
+       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 
     //for getting all predefined tasks
     @GetMapping("/get-predefined-all")
@@ -53,11 +59,6 @@ public class TasksController {
         return ResponseEntity.ok("Custom tasks successfully");
     }
 
-//    @PostMapping
-//    public ResponseEntity<?> markTaskComplete(@PathVariable String id) throws Exception {
-//        taskServices.markTaskCompletion(id);
-//        return ResponseEntity.ok("Task marked as complete successfully");
-//    }
 
     @PostMapping("/mark-complete")
     public ResponseEntity<String> updateTaskCompletion(@RequestBody TaskCompletions request) {
