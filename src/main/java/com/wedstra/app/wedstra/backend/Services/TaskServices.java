@@ -131,5 +131,9 @@ public class TaskServices {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public void deleteCustomTask(String taskId) {
+        tasksRepository.deleteById(taskId);
+    }
 }
 
