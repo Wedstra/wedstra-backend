@@ -91,6 +91,12 @@ public ResponseEntity<?> registerVendor(
         return new ResponseEntity<>(vendorServices.getVendorById(id), HttpStatus.OK);
     }
 
+    @PostMapping("/byIds")
+    public ResponseEntity<List<Vendor>> getVendorsByIds(@RequestBody List<String> ids) {
+        List<Vendor> vendors = vendorServices.findByIdIn(ids);
+        return ResponseEntity.ok(vendors);
+    }
+
     @GetMapping("/getVendorByUsername/{username}")
     public ResponseEntity<?> handleGetVendorByUsername(@PathVariable String username){
         return new ResponseEntity<>(vendorServices.getVendorByUserName(username), HttpStatus.OK);
@@ -109,16 +115,6 @@ public ResponseEntity<?> registerVendor(
     }
 
 
-//    @PutMapping("/{id}/update")
-//    public ResponseEntity<String> handleUpdateVendor(@PathVariable String id, @RequestBody Vendor vendor){
-//        String message = vendorServices.updateVendor(id, vendor);
-//        if(message.contains("not found")){
-//            return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
-//        }
-//        else{
-//            return new ResponseEntity<>(message, HttpStatus.OK);
-//        }
-//    }
 
     @PutMapping("/{id}/update")
     public ResponseEntity<String> handleUpdateVendor(@PathVariable String id, @RequestBody Vendor vendor) {
