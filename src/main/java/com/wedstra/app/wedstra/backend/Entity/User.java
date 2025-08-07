@@ -2,7 +2,9 @@ package com.wedstra.app.wedstra.backend.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -24,6 +26,7 @@ public class User {
     private String role;
     private String planType;
     private double budget;
+    private List<String> wishlistVendorIds = new ArrayList<>();
 
     public String getRole() {
         return role;
@@ -49,6 +52,14 @@ public class User {
         this.address = address;
         this.roles = roles;
         this.passwordHash = passwordHash;
+    }
+
+    public List<String> getWishlistVendorIds() {
+        return wishlistVendorIds;
+    }
+
+    public void setWishlistVendorIds(List<String> wishlistVendorIds) {
+        this.wishlistVendorIds = wishlistVendorIds;
     }
 
     public double getBudget() {
