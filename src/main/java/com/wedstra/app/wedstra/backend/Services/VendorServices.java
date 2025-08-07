@@ -286,4 +286,9 @@ public class VendorServices {
         helper.setText(body, true);
         mailSender.send(mimeMessage);
     }
+
+    public List<Vendor> findByIdIn(List<String> ids) {
+        List<Vendor> vendors = vendorRepository.findByIdIn(ids);
+        return vendors;
+    }
 }
