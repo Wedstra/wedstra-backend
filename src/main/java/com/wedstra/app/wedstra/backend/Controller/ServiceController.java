@@ -78,8 +78,8 @@ public class ServiceController {
 
 
     @DeleteMapping("{service_id}/delete")
-    public ResponseEntity<?> handleServiceDelete(@PathVariable String service_id) {
-        if (serviceServices.deleteService(service_id)) {
+    public ResponseEntity<?> handleServiceDelete(@PathVariable String service_id, @RequestParam String vendorId) {
+        if (serviceServices.deleteService(service_id, vendorId)) {
             return new ResponseEntity<>("Service deleted", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("service not found", HttpStatus.NOT_FOUND);
