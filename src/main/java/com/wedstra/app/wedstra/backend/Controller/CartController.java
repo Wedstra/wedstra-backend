@@ -29,8 +29,8 @@ public class CartController {
 
 
     @PostMapping("/{userId}/addItem")
-    public ResponseEntity<?> addItemToCart(@PathVariable String userId, @RequestBody CartItem cart){
-        Cart newItem = cartServices.addItemToCart(userId,cart);
+    public ResponseEntity<?> addItemToCart(@PathVariable String userId, @RequestBody CartItem cart, @RequestParam(defaultValue = "false") boolean forceReplace){
+        Cart newItem = cartServices.addItemToCart(userId,cart,forceReplace);
         return ResponseEntity.ok("Item added to cart");
     }
 

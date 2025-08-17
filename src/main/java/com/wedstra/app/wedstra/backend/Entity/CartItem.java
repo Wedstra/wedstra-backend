@@ -7,23 +7,31 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "cart_items")
 public class CartItem {
 
-    @Id
-    private String id;
+        @Id
+        private String id;
+        private String vendorId;
+        private String serviceId; // Vendor service ID
+        private String serviceName;
+        private double price;
+        private int quantity;
+    
+        public CartItem() {}
 
-    private String serviceId; // Vendor service ID
-    private String serviceName;
-    private double price;
-    private int quantity;
-
-    public CartItem() {}
-
-    public CartItem(String serviceId, String serviceName, double price, int quantity) {
+    public CartItem(String vendorId, String serviceId, String serviceName, double price, int quantity) {
+            this.vendorId = vendorId;
         this.serviceId = serviceId;
         this.serviceName = serviceName;
         this.price = price;
         this.quantity = quantity;
     }
 
+    public String getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(String vendorId) {
+        this.vendorId = vendorId;
+    }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
