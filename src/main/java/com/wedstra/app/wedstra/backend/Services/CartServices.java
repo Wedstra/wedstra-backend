@@ -5,7 +5,9 @@ import com.wedstra.app.wedstra.backend.Entity.CartItem;
 import com.wedstra.app.wedstra.backend.Repo.CartItemRepository;
 import com.wedstra.app.wedstra.backend.Repo.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +64,10 @@ public class CartServices {
                         cart.getItems().add(newItem);
                     }
                     else{
-                        throw new IllegalArgumentException("l̥Cart already contains items from another vendor. Use forceReplace=true to override.");
+                        throw new ResponseStatusException(
+                                HttpStatus.CONFLICT,
+                                "Cart already contains items from another vendor. Use forceReplace=true to override."
+                        );
                     }
                     }
                 }

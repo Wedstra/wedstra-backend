@@ -29,10 +29,23 @@ public class CartController {
 
 
     @PostMapping("/{userId}/addItem")
-    public ResponseEntity<?> addItemToCart(@PathVariable String userId, @RequestBody CartItem cart, @RequestParam(defaultValue = "false") boolean forceReplace){
-        Cart newItem = cartServices.addItemToCart(userId,cart,forceReplace);
-        return ResponseEntity.ok("Item added to cart");
+    public ResponseEntity<?> addItemToCart(
+            @PathVariable String userId,
+            @RequestBody CartItem cartItem,
+            @RequestParam(defaultValue = "false") boolean forceReplace) {
+
+        try {
+            Cart updatedCart = cartServices.addItemToCart(userId, cartItem, forceReplace);
+            return ResponseEntity.ok(updatedCart); // better to return cart instead of just a string
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong: " + e.getMessage());
+        }
     }
+
 
 
     @DeleteMapping("/remove/{userId}/{serviceId}")
