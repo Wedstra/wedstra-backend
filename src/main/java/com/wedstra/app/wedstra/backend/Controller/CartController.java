@@ -36,15 +36,13 @@ public class CartController {
 
         try {
             Cart updatedCart = cartServices.addItemToCart(userId, cartItem, forceReplace);
-            return ResponseEntity.ok(updatedCart); // better to return cart instead of just a string
+            return ResponseEntity.ok(updatedCart);
         }
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong: " + e.getMessage());
-        }
     }
+
 
 
 
