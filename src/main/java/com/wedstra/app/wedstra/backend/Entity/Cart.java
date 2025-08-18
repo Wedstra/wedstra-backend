@@ -14,7 +14,7 @@ public class Cart {
     private String id;
 
     private String userId;
-
+    private String vendorId;
     private List<CartItem> items = new ArrayList<>();
 
     private double totalAmount = 0.0;
