@@ -33,7 +33,6 @@ public class CartController {
             @PathVariable String userId,
             @RequestBody CartItem cartItem,
             @RequestParam(defaultValue = "false") boolean forceReplace) {
-
         try {
             Cart updatedCart = cartServices.addItemToCart(userId, cartItem, forceReplace);
             return ResponseEntity.ok(updatedCart);
@@ -41,7 +40,11 @@ public class CartController {
         catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Something went wrong");
+        }
     }
+
 
 
 
