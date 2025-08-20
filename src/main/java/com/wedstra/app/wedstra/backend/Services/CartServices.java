@@ -24,61 +24,47 @@ public class CartServices {
     private CartItemRepository cartItemRepository;
 
     public Cart addItemToCart(String userId, CartItem newItem, boolean forceReplace) {
-        //Cart is created or already exited logic
-        Cart cart = null;
-        try {
-            // Find existing cart for the user or create a new one
-            cart = cartRepository.findByUserId(userId)
-                    .orElseGet(() -> {
-                        Cart c = new Cart();
-                        c.setUserId(userId);
-                        c.setItems(new ArrayList<>());
-                        c.setTotalAmount(0.0);
-                        return c;
-                    });
+        // Find existing cart or create new one
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseGet(() -> {
+                    Cart c = new Cart();
+                    c.setUserId(userId);
+                    c.setItems(new ArrayList<>());
+                    c.setTotalAmount(0.0);
+                    return c;
+                });
 
-            System.out.println("Cart  = "+cart.getUserId());
-            System.out.println("Cart  = "+cart.getItems());
-            System.out.println("Cart  = "+cart.getTotalAmount());
+        // If cart empty → add first item
+        if (cart.getItems().isEmpty()) {
+            cart.getItems().add(newItem);
+        } else {
+            // Check vendor lock
+            String vendorLockId = cart.getItems().get(0).getVendorId();
 
-
-            //if cart is empty
-            if(cart.getItems().isEmpty()){
-//                simply add 1st item
+            if (vendorLockId.equals(newItem.getVendorId())) {
+                // Same vendor → just add
                 cart.getItems().add(newItem);
-            }
-            else {
-                //else if cart already have items
-                String vendor_lock_id = cart.getItems().get(0).getVendorId();
-                //when already exited and new item have same vendor Id
-                if(vendor_lock_id.equals(newItem.getVendorId())) {
+            } else {
+                if (forceReplace) {
+                    // Clear and replace with new vendor item
+                    cart.setItems(new ArrayList<>());
+                    cart.setTotalAmount(0.0);
                     cart.getItems().add(newItem);
+                } else {
+                    // Different vendor + no forceReplace → throw conflict
+                    throw new IllegalArgumentException(
+                            "Cart already contains items from another vendor. Use forceReplace=true to override."
+                    );
                 }
-                else{
-                    //if forceReplace is true
-                    if(forceReplace){
-                        //empty the cart items and add new item only and update total amount
-                        cart.setItems(new ArrayList<>());
-                        cart.setTotalAmount(0.0);
-
-                        cart.getItems().add(newItem);
-                    }
-                    else{
-                        throw new ResponseStatusException(
-                                HttpStatus.CONFLICT,
-                                "Cart already contains items from another vendor. Use forceReplace=true to override."
-                        );
-                    }
-                    }
-                }
-
             }
-         catch (Exception e) {
-            throw new RuntimeException(e);
         }
+
+        // Update total amount
         cart.setTotalAmount(calculateTotal(cart.getItems()));
+
         return cartRepository.save(cart);
     }
+
 
     private double calculateTotal(List<CartItem> items) {
         return items.stream().mapToDouble(CartItem::getPrice).sum();
