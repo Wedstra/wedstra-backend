@@ -45,14 +45,11 @@ public class CartController {
         }
     }
 
-
-
-
-
-    @DeleteMapping("/remove/{userId}/{serviceId}")
-    public ResponseEntity<Cart> removeItemFromCart(
-            @PathVariable String userId,
+    @DeleteMapping("/{cartId}/items/{serviceId}")
+    public ResponseEntity<String> removeItem(
+            @PathVariable String cartId,
             @PathVariable String serviceId) {
-        return ResponseEntity.ok(cartServices.removeItemFromCart(userId, serviceId));
+        cartServices.removeItemFromCart(cartId, serviceId);
+        return ResponseEntity.ok("Item removed successfully");
     }
 }
