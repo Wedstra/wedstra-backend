@@ -16,7 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Service {
-
     @Id
     private String id;
     private String service_name;
