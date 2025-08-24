@@ -31,6 +31,11 @@ public class ServiceServices {
     @Autowired
     FileStore fileStore;
 
+    public com.wedstra.app.wedstra.backend.Entity.Service getServiceById(String id) {
+        Optional<com.wedstra.app.wedstra.backend.Entity.Service> service = serviceRepository.findById(id);
+        return service.orElseThrow(() -> new RuntimeException("Service not found with id: " + id));
+    }
+
     public List<com.wedstra.app.wedstra.backend.Entity.Service> getAllServices() {
         return serviceRepository.findAll();
     }

@@ -19,6 +19,12 @@ public class ServiceController {
     @Autowired
     private ServiceServices serviceServices;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Service> getServiceById(@PathVariable String id) {
+        Service service = serviceServices.getServiceById(id);
+        return ResponseEntity.ok(service);
+    }
+
     @GetMapping("/getAll")
     public ResponseEntity<List<Service>> handleGetAllServices() {
         return new ResponseEntity<List<Service>>(serviceServices.getAllServices(), HttpStatus.OK);
