@@ -5,14 +5,17 @@ import com.wedstra.app.wedstra.backend.Entity.CartItem;
 import com.wedstra.app.wedstra.backend.Repo.CartItemRepository;
 import com.wedstra.app.wedstra.backend.Repo.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Optional;
+
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 @Service
 public class CartServices {
@@ -22,6 +25,51 @@ public class CartServices {
 
     @Autowired
     private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+//    public Cart addItemToCart(String userId, CartItem newItem, boolean forceReplace) {
+//        // Find existing cart or create new one
+//        Cart cart = cartRepository.findByUserId(userId)
+//                .orElseGet(() -> {
+//                    Cart c = new Cart();
+//                    c.setUserId(userId);
+//                    c.setItems(new ArrayList<>());
+//                    c.setTotalAmount(0.0);
+//                    return c;
+//                });
+//
+//        // If cart empty → add first item
+//        if (cart.getItems().isEmpty()) {
+//            cart.getItems().add(newItem);
+//        } else {
+//            // Check vendor lock
+//            String vendorLockId = cart.getItems().get(0).getVendorId();
+//
+//            if (vendorLockId.equals(newItem.getVendorId())) {
+//                // Same vendor → just add
+//                cart.getItems().add(newItem);
+//            } else {
+//                if (forceReplace) {
+//                    // Clear and replace with new vendor item
+//                    cart.setItems(new ArrayList<>());
+//                    cart.setTotalAmount(0.0);
+//                    cart.getItems().add(newItem);
+//                } else {
+//                    // Different vendor + no forceReplace → throw conflict
+//                    throw new IllegalArgumentException(
+//                            "Cart already contains items from another vendor. Use forceReplace=true to override."
+//                    );
+//                }
+//            }
+//        }
+//
+//        // Update total amount
+//        cart.setTotalAmount(calculateTotal(cart.getItems()));
+//
+//        return cartRepository.save(cart);
+//    }
 
     public Cart addItemToCart(String userId, CartItem newItem, boolean forceReplace) {
         // Find existing cart or create new one
@@ -34,24 +82,34 @@ public class CartServices {
                     return c;
                 });
 
-        // If cart empty → add first item
         if (cart.getItems().isEmpty()) {
+            // Cart empty → add first item
             cart.getItems().add(newItem);
         } else {
-            // Check vendor lock
+            // Vendor lock check
             String vendorLockId = cart.getItems().get(0).getVendorId();
 
             if (vendorLockId.equals(newItem.getVendorId())) {
-                // Same vendor → just add
-                cart.getItems().add(newItem);
+                // Same vendor → check if service already exists
+                Optional<CartItem> existingItemOpt = cart.getItems().stream()
+                        .filter(item -> item.getServiceId().equals(newItem.getServiceId()))
+                        .findFirst();
+
+                if (existingItemOpt.isPresent()) {
+                    // Service already exists → increase quantity
+                    CartItem existingItem = existingItemOpt.get();
+                    existingItem.setQuantity(existingItem.getQuantity() + newItem.getQuantity());
+                } else {
+                    // New service → add to cart
+                    cart.getItems().add(newItem);
+                }
             } else {
                 if (forceReplace) {
-                    // Clear and replace with new vendor item
+                    // Replace vendor’s items with new one
                     cart.setItems(new ArrayList<>());
                     cart.setTotalAmount(0.0);
                     cart.getItems().add(newItem);
                 } else {
-                    // Different vendor + no forceReplace → throw conflict
                     throw new IllegalArgumentException(
                             "Cart already contains items from another vendor. Use forceReplace=true to override."
                     );
@@ -59,42 +117,52 @@ public class CartServices {
             }
         }
 
-        // Update total amount
+        // ✅ Always recalc total using price × quantity
         cart.setTotalAmount(calculateTotal(cart.getItems()));
 
         return cartRepository.save(cart);
     }
 
 
+
+
+
     private double calculateTotal(List<CartItem> items) {
-        return items.stream().mapToDouble(CartItem::getPrice).sum();
+        return items.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
     }
 
-    public Cart removeItemFromCart(String userId, String serviceId) {
-        try {
-            // Find the user's cart
-            Cart cart = cartRepository.findByUserId(userId)
-                    .orElseThrow(() -> new RuntimeException("Cart not found for user: " + userId));
 
-            // Try to remove the item
-            boolean removed = cart.getItems().removeIf(item -> Objects.equals(item.getServiceId(), serviceId));
+    public void removeItemFromCart(String cartId, String serviceId) {
+        // Fetch cart
+        Cart cart = mongoTemplate.findById(cartId, Cart.class);
 
-            if (!removed) {
-                throw new RuntimeException("Service not found in cart for deletion: " + serviceId);
-            }
-
-            // Recalculate total amount
-            double total = cart.getItems().stream()
-                    .mapToDouble(CartItem::getPrice)
-                    .sum();
-            cart.setTotalAmount(total);
-
-            return cartRepository.save(cart);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to remove item from cart: " + e.getMessage(), e);
+        if (cart == null) {
+            throw new IllegalArgumentException("Cart not found with id: " + cartId);
         }
+
+        // Find the item to remove
+        CartItem itemToRemove = cart.getItems().stream()
+                .filter(item -> item.getServiceId().equals(serviceId))
+                .findFirst()
+                .orElse(null);
+
+        if (itemToRemove == null) {
+            throw new IllegalArgumentException("Service not found in cart: " + serviceId);
+        }
+
+        // Subtract from total amount
+        double itemTotal = itemToRemove.getPrice() * itemToRemove.getQuantity();
+        cart.setTotalAmount(cart.getTotalAmount() - itemTotal);
+
+        // Remove item
+        cart.getItems().remove(itemToRemove);
+
+        // Save updated cart
+        mongoTemplate.save(cart);
     }
+
 
 
     public Cart getCartByUserId(String userId) {
