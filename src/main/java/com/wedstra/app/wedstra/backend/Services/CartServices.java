@@ -152,16 +152,28 @@ public class CartServices {
             throw new IllegalArgumentException("Service not found in cart: " + serviceId);
         }
 
-        // Subtract from total amount
-        double itemTotal = itemToRemove.getPrice() * itemToRemove.getQuantity();
-        cart.setTotalAmount(cart.getTotalAmount() - itemTotal);
+        // Subtract price from total
+        double pricePerUnit = itemToRemove.getPrice();
 
-        // Remove item
-        cart.getItems().remove(itemToRemove);
+        if (itemToRemove.getQuantity() > 1) {
+            // Reduce quantity by 1
+            itemToRemove.setQuantity(itemToRemove.getQuantity() - 1);
+            cart.setTotalAmount(cart.getTotalAmount() - pricePerUnit);
+        } else {
+            // Quantity is 1 → remove item completely
+            cart.setTotalAmount(cart.getTotalAmount() - pricePerUnit);
+            cart.getItems().remove(itemToRemove);
+        }
+
+        // Ensure total is never negative
+        if (cart.getTotalAmount() < 0) {
+            cart.setTotalAmount(0);
+        }
 
         // Save updated cart
         mongoTemplate.save(cart);
     }
+
 
 
 
