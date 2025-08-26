@@ -77,9 +77,24 @@ public class UserServices {
     }
 
     public User updateBudget(String userId, double newBudget) {
-        User user = userRepo.findById(userId).orElseThrow();
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+        if (newBudget < 0) {
+            throw new IllegalArgumentException("Budget cannot be negative");
+        }
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        if (Double.compare(user.getBudget(), newBudget) == 0) {
+            return user; // return unchanged
+        }
+
         user.setBudget(newBudget);
+
         return userRepo.save(user);
     }
+
 
 }
