@@ -16,9 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Service {
-
     @Id
-    private ObjectId id;
+    private String id;
     private String service_name;
     private String description;
     private String category;
@@ -53,11 +52,11 @@ public class Service {
         this.service_name = service_name;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 

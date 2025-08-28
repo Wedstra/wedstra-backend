@@ -31,6 +31,11 @@ public class ServiceServices {
     @Autowired
     FileStore fileStore;
 
+    public com.wedstra.app.wedstra.backend.Entity.Service getServiceById(String id) {
+        Optional<com.wedstra.app.wedstra.backend.Entity.Service> service = serviceRepository.findById(id);
+        return service.orElseThrow(() -> new RuntimeException("Service not found with id: " + id));
+    }
+
     public List<com.wedstra.app.wedstra.backend.Entity.Service> getAllServices() {
         return serviceRepository.findAll();
     }
@@ -46,13 +51,28 @@ public class ServiceServices {
         return mongoTemplate.find(query, com.wedstra.app.wedstra.backend.Entity.Service.class);
     }
 
-    public boolean deleteService(String id) {
+    public boolean deleteService(String id, String vendorId) {
         Query query = new Query(Criteria.where("id").is(id));
         com.wedstra.app.wedstra.backend.Entity.Service existingService = mongoTemplate.findOne(query, com.wedstra.app.wedstra.backend.Entity.Service.class);
 
+        Vendor vendor = vendorRepository.findById(new ObjectId(vendorId))
+                .orElseThrow(() -> new RuntimeException("Vendor not found"));
+
+        if(vendor == null){
+            return false;
+        }
+
         if (existingService != null) {
-            serviceRepository.deleteById(id);
-            return true;
+            if(vendor.getNoOfServices() > 0){
+                vendor.setNoOfServices(vendor.getNoOfServices() - 1);
+                serviceRepository.deleteById(id);
+                vendorRepository.save(vendor);
+                return true;
+            }
+            else {
+                return false;
+            }
+
         } else {
             return false;
         }

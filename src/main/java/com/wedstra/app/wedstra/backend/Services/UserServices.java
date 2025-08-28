@@ -34,6 +34,7 @@ public class UserServices {
         user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
         user.setRole("USER");
         user.setPlanType("FREE");
+        user.setBudget(0);
         User user1 = userRepo.save(user);
         if(user1 != null){
             return "user registration successfully.";
@@ -74,4 +75,26 @@ public class UserServices {
     public User getUserByUsername(String username) {
         return userRepo.findByUsername(username);
     }
+
+    public User updateBudget(String userId, double newBudget) {
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new IllegalArgumentException("User ID cannot be null or empty");
+        }
+        if (newBudget < 0) {
+            throw new IllegalArgumentException("Budget cannot be negative");
+        }
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        if (Double.compare(user.getBudget(), newBudget) == 0) {
+            return user; // return unchanged
+        }
+
+        user.setBudget(newBudget);
+
+        return userRepo.save(user);
+    }
+
+
 }

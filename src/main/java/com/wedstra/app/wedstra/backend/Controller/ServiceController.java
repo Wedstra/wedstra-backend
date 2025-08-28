@@ -19,6 +19,12 @@ public class ServiceController {
     @Autowired
     private ServiceServices serviceServices;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Service> getServiceById(@PathVariable String id) {
+        Service service = serviceServices.getServiceById(id);
+        return ResponseEntity.ok(service);
+    }
+
     @GetMapping("/getAll")
     public ResponseEntity<List<Service>> handleGetAllServices() {
         return new ResponseEntity<List<Service>>(serviceServices.getAllServices(), HttpStatus.OK);
@@ -78,8 +84,8 @@ public class ServiceController {
 
 
     @DeleteMapping("{service_id}/delete")
-    public ResponseEntity<?> handleServiceDelete(@PathVariable String service_id) {
-        if (serviceServices.deleteService(service_id)) {
+    public ResponseEntity<?> handleServiceDelete(@PathVariable String service_id, @RequestParam String vendorId) {
+        if (serviceServices.deleteService(service_id, vendorId)) {
             return new ResponseEntity<>("Service deleted", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("service not found", HttpStatus.NOT_FOUND);

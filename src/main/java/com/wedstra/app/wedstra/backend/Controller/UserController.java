@@ -63,4 +63,9 @@ public class UserController {
     public ResponseEntity<User> hendleGetUserByUsername(@PathVariable String username){
         return new ResponseEntity<>(userServices.getUserByUsername(username), HttpStatus.OK);
     }
+
+    @PutMapping("/{id}/budget")
+    public ResponseEntity<User> updateBudget(@PathVariable String id, @RequestBody double budget) {
+        return ResponseEntity.ok(userServices.updateBudget(id, budget));
+    }
 }
