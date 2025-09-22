@@ -50,7 +50,7 @@ public class RealWeddingService {
                     realWeddingPhoto.getInputStream(),
                     generateKey(realWeddingPhoto, realWeddingId)
             );
-            photoUrls.add(photoUrl); // ✅ Correct: directly add the returned URL
+            photoUrls.add(photoUrl);
         }
 
         newRealWedding.setFileUrls(photoUrls);

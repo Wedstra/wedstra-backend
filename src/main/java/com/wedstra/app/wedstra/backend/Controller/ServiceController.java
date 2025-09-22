@@ -75,13 +75,9 @@ public class ServiceController {
     }
 
     @GetMapping("/by-vendor/{vendor_id}/by-location/{location}/by-category/{category}")
-    public ResponseEntity<List<Service>> handleGetServicesByCategory(@PathVariable String category, @PathVariable String location,@PathVariable String vendor_id) {
+    public ResponseEntity<List<Service>> handleGetServicesForVendorByCategoryByCity(@PathVariable String category, @PathVariable String location,@PathVariable String vendor_id) {
         return new ResponseEntity<>(serviceServices.getServicesByVendorByLocationByCategory(category, location,vendor_id), HttpStatus.OK);
     }
-
-
-
-
 
     @DeleteMapping("{service_id}/delete")
     public ResponseEntity<?> handleServiceDelete(@PathVariable String service_id, @RequestParam String vendorId) {

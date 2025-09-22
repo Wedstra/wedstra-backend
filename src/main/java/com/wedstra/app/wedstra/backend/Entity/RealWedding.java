@@ -11,24 +11,32 @@ public class RealWedding {
     @Id
     private String id;
     private String title;
+    private String couples_name;
     private List<String> fileUrls;
     private LocalDateTime createdAt;  // New field
 
     public RealWedding() {
-        this.createdAt = LocalDateTime.now(); // Auto-set on default constructor
+        this.createdAt = LocalDateTime.now();
     }
 
-    public RealWedding(String title, List<String> fileUrls) {
+    public RealWedding(String title, List<String> fileUrls, String couples_name) {
         this.title = title;
         this.fileUrls = fileUrls;
-        this.createdAt = LocalDateTime.now(); // Auto-set when object is created
+        this.couples_name = couples_name;
+        this.createdAt = LocalDateTime.now();
     }
 
-    public RealWedding(String title) {
-        this.title = title;
-    }
 
     // Getters and Setters
+
+    public String getCouples_name() {
+        return couples_name;
+    }
+
+    public void setCouples_name(String couples_name) {
+        this.couples_name = couples_name;
+    }
+
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
