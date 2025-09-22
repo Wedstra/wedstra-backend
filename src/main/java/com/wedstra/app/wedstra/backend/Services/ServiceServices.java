@@ -158,14 +158,18 @@ public class ServiceServices {
         return mongoTemplate.find(query, com.wedstra.app.wedstra.backend.Entity.Service.class);
     }
 
-    public List<com.wedstra.app.wedstra.backend.Entity.Service> getServicesByVendorByLocationByCategory(String category, String location, String vendorId) {
-        List<com.wedstra.app.wedstra.backend.Entity.Service> services = null;
+    public List<com.wedstra.app.wedstra.backend.Entity.Service> getServicesByVendorByLocationByCategory(
+            String category, String location, String vendorId) {
         try {
-            Query query = new Query(Criteria.where("category").is(category).and("location").is(location).and("vendor_id").is(vendorId));
-            services = mongoTemplate.find(query, com.wedstra.app.wedstra.backend.Entity.Service.class);
+            Query query = new Query();
+            query.addCriteria(Criteria.where("category").is(category)
+                    .and("location").is(location)
+                    .and("vendor_id").is(vendorId));
+
+            return mongoTemplate.find(query, com.wedstra.app.wedstra.backend.Entity.Service.class);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error fetching services by vendor, location, and category", e);
         }
-        return services;
     }
+
 }
