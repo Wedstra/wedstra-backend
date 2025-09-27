@@ -29,6 +29,7 @@ public class Vendor{
     private String terms_and_conditions;
     private String email;
     private String phone_no;
+    private String state;
     private String city;
     private String role;
     private String planType;
@@ -36,7 +37,7 @@ public class Vendor{
     private boolean isVerified;
 
 
-    public Vendor(String username, String password, String vendor_name, String business_name, String business_category,String email, String phone_no,String city, String gst_number, String terms_and_conditions ) {
+    public Vendor(String username, String password, String vendor_name, String business_name, String business_category,String email, String phone_no,String state,String city, String gst_number, String terms_and_conditions ) {
         this.username = username;
         this.password = password;
         this.vendor_name = vendor_name;
@@ -46,8 +47,17 @@ public class Vendor{
         this.terms_and_conditions = terms_and_conditions;
         this.email = email;
         this.phone_no = phone_no;
+        this.state = state;
         this.city = city;
         this.liscence = liscence;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public boolean isVerified() {

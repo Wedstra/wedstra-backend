@@ -48,8 +48,8 @@ public class VendorServices {
         return vendorRepository.findAll();
     }
 
-    public ResponseEntity<?> registerVendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String city, String gstNumber, MultipartFile license, String termsAndConditions, MultipartFile vendorAadharCard, MultipartFile vendorPAN, MultipartFile businessPAN, MultipartFile electricityBill, List<MultipartFile> businessPhotos) throws IOException, MessagingException {
-        Vendor vendor = new Vendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, termsAndConditions);
+    public ResponseEntity<?> registerVendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String state,String city, String gstNumber, MultipartFile license, String termsAndConditions, MultipartFile vendorAadharCard, MultipartFile vendorPAN, MultipartFile businessPAN, MultipartFile electricityBill, List<MultipartFile> businessPhotos) throws IOException, MessagingException {
+        Vendor vendor = new Vendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, state,city, gstNumber, termsAndConditions);
         vendor.setPasswordHash(passwordEncoder.encode(password));
         vendor.setRole("VENDOR");
         vendor.setNoOfServices(0);

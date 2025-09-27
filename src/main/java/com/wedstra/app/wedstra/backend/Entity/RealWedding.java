@@ -27,8 +27,7 @@ public class RealWedding {
     }
 
 
-    // Getters and Setters
-
+    // Getters and Setters  
     public String getCouples_name() {
         return couples_name;
     }
