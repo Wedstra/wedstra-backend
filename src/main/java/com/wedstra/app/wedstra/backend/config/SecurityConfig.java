@@ -45,10 +45,10 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/user/login", "/vendor/register", "/vendor/login", "/vendor/test", "/vendor/getVendors", "/resources/categories", "/vendor/by-location/{location}/by-category/{category}", "/vendor/getVendorById/{id}", "/vendor/verify/{id}", "/vendor/get/verified",
-                                "/vendor/verified/by-category/{category}","/vendor/getVendors",
+                                "/vendor/verified/by-category/{category}","/vendor/getVendors","/vendor/getVendorById/{id}",
                                 "/location/states", "/location/cities","/location/vendors/states", "/location/vendors/states/{state}/cities",
                                 "/reviews/website","/reviews",
-                                "/api/real-weddings/all",
+                                "/api/real-weddings/all","/service/{vendor_id}/all",
                                 "/auth/forgot-password","/auth/reset-password",
                                 "/blogs",
                                 "/ws/**")
