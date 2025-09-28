@@ -1,11 +1,14 @@
 package com.wedstra.app.wedstra.backend.Entity;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
 @Document(collection = "messages")
 public class Message {
+    @Id
+    private String id;
     private String senderName;
     private String receiverName;
     private String sName;
@@ -13,6 +16,7 @@ public class Message {
     private String message;
     private Date date;
     private Status status;
+    private boolean isRead;
     public Message() {
     }
 
@@ -24,6 +28,22 @@ public class Message {
         this.message = message;
         this.date = date;
         this.status = status;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
     }
 
     public String getsName() {

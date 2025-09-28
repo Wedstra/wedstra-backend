@@ -1,5 +1,6 @@
 package com.wedstra.app.wedstra.backend.Controller;
 
+import com.wedstra.app.wedstra.backend.Entity.MarkAsReadRequest;
 import com.wedstra.app.wedstra.backend.Entity.Message;
 import com.wedstra.app.wedstra.backend.Repo.MessageRepository;
 import com.wedstra.app.wedstra.backend.Services.MessageService;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ChatController {
@@ -55,5 +58,35 @@ public class ChatController {
             return ResponseEntity.noContent().build(); // Returns 204 if no messages found
         }
         return ResponseEntity.ok(messages);
+    }
+
+    @MessageMapping("/mark-as-read")
+    public void markMessagesAsRead(@Payload MarkAsReadRequest request) {
+        // Ensure the request is valid
+        if (request.getMessageIds() == null || request.getMessageIds().isEmpty()) {
+            return; // Nothing to do
+        }
+
+        // Step 1: Update the database and get the updated messages back
+        List<Message> updatedMessages = messageService.updateReadStatus(request.getMessageIds());
+
+        // Step 2: Notify the original sender that the messages have been read
+        if (!updatedMessages.isEmpty()) {
+            // All messages in this batch were sent by the same person to the current user.
+            // So we can get the sender's ID from the first message.
+            String originalSenderName = updatedMessages.get(0).getSenderName();
+
+            // The receiver is the one who sent this "mark-as-read" request.
+            // We can get their name from the message as well.
+            String receiverName = updatedMessages.get(0).getReceiverName();
+
+            // Prepare a meaningful payload for the notification
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("messageIds", request.getMessageIds());
+            payload.put("readBy", receiverName); // Useful for the sender's UI
+
+            // Send the "messages-read" event back to the original sender's private channel
+            simpMessagingTemplate.convertAndSendToUser(originalSenderName, "/queue/messages-read", payload);
+        }
     }
 }

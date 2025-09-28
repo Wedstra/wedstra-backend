@@ -18,12 +18,17 @@ public class WishlistServices {
     }
 
     public void addToWishlist(String userId, String vendorId) {
-        User user = getUserOrThrow(userId);
-        List<String> wishlist = user.getWishlistVendorIds();
+        try {
+            User user = getUserOrThrow(userId);
+            List<String> wishlist = user.getWishlistVendorIds();
 
-        if (!wishlist.contains(vendorId)) {
-            wishlist.add(vendorId);
-            userRepository.save(user);
+            if (!wishlist.contains(vendorId)) {
+                wishlist.add(vendorId);
+                userRepository.save(user);
+            }
+        } catch (Exception e) {
+            System.err.println("ERROR: Could not add vendor '" + vendorId + "' to wishlist for user '" + userId + "'. Reason: " + e.getMessage());
+            throw new RuntimeException("Failed to update wishlist. Please try again later.", e);
         }
     }
 

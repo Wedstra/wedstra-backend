@@ -53,10 +53,10 @@ public ResponseEntity<?> registerVendor(
         @RequestParam("business_category") String businessCategory,
         @RequestParam("email") String email,
         @RequestParam("phone_no") String phoneNo,
+        @RequestParam("state") String state,
         @RequestParam("city") String city,
         @RequestParam("gst_number") String gstNumber,
         @RequestParam("liscence") MultipartFile license,
-        @RequestParam("terms_and_conditions") String termsAndConditions,
         @RequestParam("vendor_aadharCard") MultipartFile vendorAadharCard,
         @RequestParam("vendor_PAN") MultipartFile vendorPAN,
         @RequestParam("business_PAN") MultipartFile businessPAN,
@@ -64,7 +64,7 @@ public ResponseEntity<?> registerVendor(
         @RequestParam("business_photos") List<MultipartFile> businessPhotos
 ) throws IOException, MessagingException {
 
-    return vendorServices.registerVendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, license, termsAndConditions, vendorAadharCard, vendorPAN, businessPAN, electricityBill, businessPhotos);
+    return vendorServices.registerVendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, state ,city, gstNumber, license, vendorAadharCard, vendorPAN, businessPAN, electricityBill, businessPhotos);
     //return new ResponseEntity<>("working", HttpStatus.CREATED);
     }
 

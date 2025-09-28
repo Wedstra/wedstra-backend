@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,8 +47,8 @@ public class VendorServices {
         return vendorRepository.findAll();
     }
 
-    public ResponseEntity<?> registerVendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String city, String gstNumber, MultipartFile license, String termsAndConditions, MultipartFile vendorAadharCard, MultipartFile vendorPAN, MultipartFile businessPAN, MultipartFile electricityBill, List<MultipartFile> businessPhotos) throws IOException, MessagingException {
-        Vendor vendor = new Vendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, city, gstNumber, termsAndConditions);
+    public ResponseEntity<?> registerVendor(String username, String password, String vendorName, String businessName, String businessCategory, String email, String phoneNo, String state, String city, String gstNumber, MultipartFile license, MultipartFile vendorAadharCard, MultipartFile vendorPAN, MultipartFile businessPAN, MultipartFile electricityBill, List<MultipartFile> businessPhotos) throws IOException, MessagingException {
+        Vendor vendor = new Vendor(username, password, vendorName, businessName, businessCategory, email, phoneNo, state,city, gstNumber);
         vendor.setPasswordHash(passwordEncoder.encode(password));
         vendor.setRole("VENDOR");
         vendor.setNoOfServices(0);
@@ -125,7 +124,7 @@ public class VendorServices {
                     </html>
                 """.formatted(vendor.getVendor_name(),loginLink, loginLink, loginLink);
 
-        sendMail(vendor.getEmail(), subject, htmlContent);
+//        sendMail(vendor.getEmail(), subject, htmlContent);
 
         return ResponseEntity.ok(vendor);
     }
@@ -168,8 +167,6 @@ public class VendorServices {
             if (vendor.getBusiness_photos() != null) update.set("business_photos", vendor.getBusiness_photos());
             if (vendor.getLiscence() != null) update.set("liscence", vendor.getLiscence());
             if (vendor.getGst_number() != null) update.set("gst_number", vendor.getGst_number());
-            if (vendor.getTerms_and_conditions() != null)
-                update.set("terms_and_conditions", vendor.getTerms_and_conditions());
             if (vendor.getEmail() != null) update.set("email", vendor.getEmail());
             if (vendor.getPhone_no() != null) update.set("phone_no", vendor.getPhone_no());
             if (vendor.getPassword() != null) update.set("password", vendor.getPassword());

@@ -18,6 +18,7 @@ public class User {
     private String password;
     private String passwordHash;
     private String email;
+    private String whatsapp_mobileNo;
     private String mobileNo;
     private Date dob;
     private String gender;
@@ -39,19 +40,28 @@ public class User {
     // Constructors
     public User() {}
 
-    public User(String id, String firstname, String lastname, String username, String password, String email, String mobileNo, Date dob, String gender, String address, Set<String> roles, String passwordHash) {
+    public User(String id, String firstname, String lastname, String username, String password, String email, String whatsapp_mobileNo,String mobileNo, Date dob, String gender, String address, Set<String> roles, String passwordHash) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.whatsapp_mobileNo = whatsapp_mobileNo;
         this.mobileNo = mobileNo;
         this.dob = dob;
         this.gender = gender;
         this.address = address;
         this.roles = roles;
         this.passwordHash = passwordHash;
+    }
+
+    public String getWhatsapp_mobileNo() {
+        return whatsapp_mobileNo;
+    }
+
+    public void setWhatsapp_mobileNo(String whatsapp_mobileNo) {
+        this.whatsapp_mobileNo = whatsapp_mobileNo;
     }
 
     public List<String> getWishlistVendorIds() {

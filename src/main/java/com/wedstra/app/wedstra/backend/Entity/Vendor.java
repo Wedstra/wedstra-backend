@@ -26,9 +26,9 @@ public class Vendor{
     private String liscence;
     private List<String> business_photos;
     private String gst_number;
-    private String terms_and_conditions;
     private String email;
     private String phone_no;
+    private String state;
     private String city;
     private String role;
     private String planType;
@@ -36,18 +36,26 @@ public class Vendor{
     private boolean isVerified;
 
 
-    public Vendor(String username, String password, String vendor_name, String business_name, String business_category,String email, String phone_no,String city, String gst_number, String terms_and_conditions ) {
+    public Vendor(String username, String password, String vendor_name, String business_name, String business_category,String email, String phone_no,String state,String city, String gst_number) {
         this.username = username;
         this.password = password;
         this.vendor_name = vendor_name;
         this.business_name = business_name;
         this.business_category = business_category;
         this.gst_number = gst_number;
-        this.terms_and_conditions = terms_and_conditions;
         this.email = email;
         this.phone_no = phone_no;
+        this.state = state;
         this.city = city;
         this.liscence = liscence;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 
     public boolean isVerified() {
@@ -172,14 +180,6 @@ public class Vendor{
 
     public void setGst_number(String gst_number) {
         this.gst_number = gst_number;
-    }
-
-    public String getTerms_and_conditions() {
-        return terms_and_conditions;
-    }
-
-    public void setTerms_and_conditions(String terms_and_conditions) {
-        this.terms_and_conditions = terms_and_conditions;
     }
 
     public String getEmail() {
