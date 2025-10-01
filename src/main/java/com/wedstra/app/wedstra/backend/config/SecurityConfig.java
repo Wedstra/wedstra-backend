@@ -50,7 +50,7 @@ public class SecurityConfig {
                                 "/reviews/website","/reviews",
                                 "/api/real-weddings/all","/service/{vendor_id}/all",
                                 "/auth/forgot-password","/auth/reset-password",
-                                "/blogs",
+                                "/blogs","/blogs/{id}",
                                 "/ws/**")
                         .permitAll()
                         .anyRequest().authenticated()
