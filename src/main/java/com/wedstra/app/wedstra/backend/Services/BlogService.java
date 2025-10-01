@@ -76,14 +76,13 @@ public class BlogService {
             try (PDDocument document = PDDocument.load(contentFile.getInputStream())) {
                 PDFTextStripper stripper = new PDFTextStripper();
                 content = stripper.getText(document);
-
             }
         } else {
             throw new IOException("Unsupported file type. Only .docx and .pdf are supported.");
         }
 
-        // Format text for HTML display
-        content = content.replaceAll("\\r\\n|\\r|\\n", " ").trim();
+        // Format text for HTML display (optional: keep newlines to split paragraphs)
+        content = content.replaceAll("\\r\\n|\\r|\\n", "\n").trim();
 
         // 2️⃣ Upload additional images to S3
         List<String> imageUrls = new ArrayList<>();
@@ -95,17 +94,26 @@ public class BlogService {
             }
         }
 
-        // 3️⃣ Save blog to MongoDB
+        for (int i = 0; i < imageUrls.size(); i++) {
+            String placeholder = "\\[\\[image" + (i + 1) + "\\]\\]";
+            String imgTag = "<br/><div style=\"text-align:center;\"><img src=\""
+                    + imageUrls.get(i)
+                    + "\" alt=\"blog-image\" style=\"max-width:50%; height:auto; display:block; margin:0 auto;\" /></div><br/>";
+            content = content.replaceAll(placeholder, imgTag);
+        }
+
+        // 4️⃣ Save blog to MongoDB
         Blog blog = new Blog();
         blog.setTitle(title);
         blog.setContent(content);
         blog.setAuthorId(authorId);
         blog.setAuthorType(authorType);
         blog.setCreatedAt(LocalDateTime.now());
-        blog.setImageUrls(imageUrls);
+        blog.setImageUrls(imageUrls); // optional, can keep separate list
 
         return blogRepository.save(blog);
     }
+
 
 
     private String generateKey(MultipartFile file, String blogId, String type) {
