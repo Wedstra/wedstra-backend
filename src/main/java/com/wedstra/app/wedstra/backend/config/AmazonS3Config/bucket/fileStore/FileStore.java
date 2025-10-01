@@ -70,4 +70,27 @@ public class FileStore {
             return "Failed to upload file: " + e.getMessage();
         }
     }
+
+    public String saveBlogs(String fileName, Optional<Map<String, String>> optionalMetadata,
+                            InputStream inputStream, String key) {
+        try {
+            PutObjectRequest.Builder putObjectRequestBuilder = PutObjectRequest.builder()
+                    .bucket(BucketName.PROFILE_IMAGE.getBucketName()) // or separate bucket for blogs
+                    .key(key);
+
+            optionalMetadata.ifPresent(metadataMap -> putObjectRequestBuilder.metadata(metadataMap));
+
+            s3.putObject(
+                    putObjectRequestBuilder.build(),
+                    RequestBody.fromInputStream(inputStream, inputStream.available())
+            );
+
+            return "https://" + BucketName.PROFILE_IMAGE.getBucketName() + ".s3.eu-north-1.amazonaws.com/" + key;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Failed to upload file: " + e.getMessage();
+        }
+    }
+
 }

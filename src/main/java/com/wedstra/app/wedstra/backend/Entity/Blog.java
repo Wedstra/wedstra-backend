@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "blogs")
 public class Blog {
@@ -14,6 +15,25 @@ public class Blog {
     private String authorId;
     private String authorType; // "vendor" or "user"
     private LocalDateTime createdAt;
+    private List<String> imageUrls;
+
+    public Blog(){}
+
+    public Blog(String title, String content, String authorId, String authorType, List<String> imageUrls) {
+        this.title = title;
+        this.content = content;
+        this.authorId = authorId;
+        this.authorType = authorType;
+        this.imageUrls = imageUrls;
+    }
+
+    public List<String> getImageUrls() {
+        return imageUrls;
+    }
+
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
+    }
 
     public String getId() {
         return id;
