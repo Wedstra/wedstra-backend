@@ -4,12 +4,14 @@ import com.wedstra.app.wedstra.backend.Entity.Service;
 import com.wedstra.app.wedstra.backend.Services.ServiceServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/service")
@@ -53,6 +55,32 @@ public class ServiceController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Service> updateService(@PathVariable String id, @RequestBody Service serviceDetails) {
+        try {
+            // Call the service layer to perform the update logic
+            Service updatedService = serviceServices.updateService(id, serviceDetails);
+            // If successful, return the updated object with a 200 OK status
+            return ResponseEntity.ok(updatedService);
+        } catch (RuntimeException e) {
+            // This catches the "Service not found" exception from the service layer
+            // and returns a more appropriate 404 Not Found status.
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+//    @PutMapping("/{service_id}")
+//    public ResponseEntity<?> handleUpdateService(
+//            @PathVariable String service_id,
+//            @RequestBody String service_name
+//    ){
+//        System.out.println("Service Id = "+service_id);
+//        System.out.println("Service Name = "+service_name);
+//        return new ResponseEntity<String>("Update API working", HttpStatus.OK);
+//    }
+
+
 
     @GetMapping("/by-category/{category}")
     public ResponseEntity<List<Service>> handleGetServicesByCategory(@PathVariable String category) {

@@ -1,5 +1,6 @@
 package com.wedstra.app.wedstra.backend.Services;
 
+import com.mongodb.client.result.UpdateResult;
 import com.wedstra.app.wedstra.backend.Entity.Vendor;
 import com.wedstra.app.wedstra.backend.Repo.ServiceRepository;
 import com.wedstra.app.wedstra.backend.Repo.VendorRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -170,6 +172,57 @@ public class ServiceServices {
         } catch (Exception e) {
             throw new RuntimeException("Error fetching services by vendor, location, and category", e);
         }
+    }
+    public com.wedstra.app.wedstra.backend.Entity.Service updateService(String id, com.wedstra.app.wedstra.backend.Entity.Service serviceDetails) {
+        // 1. Find the existing service by its ID or throw an exception
+        com.wedstra.app.wedstra.backend.Entity.Service existingService = serviceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Service not found with id: " + id));
+
+        // 2. Update fields only if they are present in the request body
+
+        // Update String fields if not null
+        if (serviceDetails.getService_name() != null) {
+            existingService.setService_name(serviceDetails.getService_name());
+        }
+        if (serviceDetails.getDescription() != null) {
+            existingService.setDescription(serviceDetails.getDescription());
+        }
+        if (serviceDetails.getCategory() != null) {
+            existingService.setCategory(serviceDetails.getCategory());
+        }
+        if (serviceDetails.getMin_price() != null) {
+            existingService.setMin_price(serviceDetails.getMin_price());
+        }
+        if (serviceDetails.getMax_price() != null) {
+            existingService.setMax_price(serviceDetails.getMax_price());
+        }
+        if (serviceDetails.getVendor_id() != null) {
+            existingService.setVendor_id(serviceDetails.getVendor_id());
+        }
+        if (serviceDetails.getLocation() != null) {
+            existingService.setLocation(serviceDetails.getLocation());
+        }
+
+        // Update List fields if not null
+        if (serviceDetails.getImages() != null) {
+            existingService.setImages(serviceDetails.getImages());
+        }
+        if (serviceDetails.getReviews() != null) {
+            existingService.setReviews(serviceDetails.getReviews());
+        }
+
+        // Update primitive double 'ratings' only if a non-default value is provided.
+        // A primitive 'double' defaults to 0.0 if not in the JSON request body.
+        // This check prevents an accidental update to 0.0.
+        if (serviceDetails.getRatings() != 0.0) {
+            existingService.setRatings(serviceDetails.getRatings());
+        }
+
+        // Always update the 'updated_at' timestamp to the current time on any update
+        existingService.setUpdated_at(LocalDateTime.now());
+
+        // 3. Save the updated entity back to the database and return it
+        return serviceRepository.save(existingService);
     }
 
 }

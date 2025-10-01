@@ -124,7 +124,7 @@ public class VendorServices {
                     </html>
                 """.formatted(vendor.getVendor_name(),loginLink, loginLink, loginLink);
 
-//        sendMail(vendor.getEmail(), subject, htmlContent);
+        sendMail(vendor.getEmail(), subject, htmlContent);
 
         return ResponseEntity.ok(vendor);
     }
