@@ -24,8 +24,9 @@ public class RealWeddingController {
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> uploadRealWedding(
             @RequestParam("title") String title,
+            @RequestParam("couple_name") String couple_name,
             @RequestParam("files") List<MultipartFile> files) throws IOException {
-        RealWedding created = service.createRealWedding(title, files);
+        RealWedding created = service.createRealWedding(title, couple_name,files);
 
         if(created != null){
             return ResponseEntity.ok(created);
