@@ -5,7 +5,6 @@ import com.wedstra.app.wedstra.backend.Entity.RealWedding;
 import com.wedstra.app.wedstra.backend.Repo.RealWeddingRepository;
 import com.wedstra.app.wedstra.backend.config.AmazonS3Config.bucket.fileStore.FileStore;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,9 +33,10 @@ public class RealWeddingService {
         return false;
     }
 
-    public RealWedding createRealWedding(String title, List<MultipartFile> files) throws IOException {
+    public RealWedding createRealWedding(String title, String couple_name, List<MultipartFile> files) throws IOException {
         RealWedding newRealWedding = new RealWedding();
         newRealWedding.setTitle(title);
+        newRealWedding.setCouples_name(couple_name);
         repository.save(newRealWedding); // Save initially to generate ID
 
         String realWeddingId = newRealWedding.getId();
